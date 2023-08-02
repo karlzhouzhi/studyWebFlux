@@ -28,6 +28,20 @@ public class TypeDemo {
         Function<Integer, Function<Integer, Function<Integer, Integer>>> function = x->y->z->x+y+z;
         System.out.println(function.apply(1).apply(2).apply(3));
 
+        Function<Integer, Function<Integer, Function<Integer, Function<Integer, Integer>>>> function2 = x->y->z->w->x+y+z+w;
+        int[] arr = {2, 3, 4, 5};
+        Function f = function2;
+        for (int i = 0; i < arr.length; i++) {
+            if(f instanceof Function){
+                Object o = f.apply(arr[i]);
+                if(o instanceof Function){
+                    f = (Function) o;
+                }
+                else{
+                    System.out.println("结果：" + o);
+                }
+            }
+        }
 
     }
 }
