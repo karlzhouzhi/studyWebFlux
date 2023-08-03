@@ -2,6 +2,7 @@ package steam;
 
 import java.util.concurrent.Flow;
 import java.util.concurrent.SubmissionPublisher;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Description: DESC
@@ -35,6 +36,12 @@ public class FlowDemo {
             public void onNext(Integer item) {
                 System.out.println("onNext");
 
+                try {
+                    TimeUnit.SECONDS.sleep(3);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 // 处理数据
                 System.out.println("接收一个数据:" + item);
 
@@ -64,10 +71,11 @@ public class FlowDemo {
         // 4 生产数据，并发布
         // 这里忽略数据生产过程
         int data = 100;
-        publisher.submit(data);
-        publisher.submit(1);
-        publisher.submit(2);
-        publisher.submit(3);
+        // submit阻塞，订阅者缓存池数据满了，消费数据前，这个submit就被阻塞，消费者就可以调节生产者生产数据的速度
+        for (int i = 0; i < 10000; i++) {
+            System.out.println("生产者生产数据:" + i);
+         publisher.submit(i);
+        }
 
         // 5 结束后，关闭发布者
         // 正式环境应该finally或者try catch确保关闭
